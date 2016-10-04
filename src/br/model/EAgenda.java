@@ -2,11 +2,11 @@ package br.model;
 
 public class EAgenda {
 
-	private Long id;
+	private int id;
 	private String nome;
 	private String telefone;
 
-	public EAgenda(Long id, String nome, String telefone) {
+	public EAgenda(int id, String nome, String telefone) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -17,11 +17,11 @@ public class EAgenda {
 		
 	}
 
-	public Long getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

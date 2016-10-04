@@ -13,6 +13,7 @@ public class ConexaoBD {
 	static Connection getConexao() {
 		if (conexao != null) {
 			return conexao;
+			
 		} else {
 			try {
 				String driver = "com.mysql.jdbc.Driver";
