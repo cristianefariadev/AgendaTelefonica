@@ -1,4 +1,4 @@
-package br.model;
+package br.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,10 +10,9 @@ public class ConexaoBD {
 
 	private static Connection conexao = null;
 
-	static Connection getConexao() {
+	public static Connection getConexao() {
 		if (conexao != null) {
 			return conexao;
-			
 		} else {
 			try {
 				String driver = "com.mysql.jdbc.Driver";
@@ -33,21 +32,21 @@ public class ConexaoBD {
 		}
 	}
 
-	public static void fecharConexao(Connection con, PreparedStatement ps) {
-		fecharConexao(con, ps, null);
+	public static void fecharConexao(Connection conexao, PreparedStatement prd) {
+		fecharConexao(conexao, prd, null);
 	}
 
-	public static void fecharConexao(Connection con) {
-		fecharConexao(con, null, null);
+	public static void fecharConexao(Connection conexao) {
+		fecharConexao(conexao, null, null);
 	}
 
-	public static void fecharConexao(Connection con, PreparedStatement ps, ResultSet rs) {
+	public static void fecharConexao(Connection conexao, PreparedStatement prd, ResultSet rs) {
 		try {
-			con.close();
+			conexao.close();
 		} catch (Exception e) {
 		}
 		try {
-			ps.close();
+			prd.close();
 		} catch (Exception e) {
 		}
 		try {

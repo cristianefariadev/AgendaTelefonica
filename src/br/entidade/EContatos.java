@@ -1,27 +1,27 @@
-package br.model;
+package br.entidade;
 
-public class EAgenda {
+public class EContatos {
 
-	private int id;
+	private long id;
 	private String nome;
 	private String telefone;
 
-	public EAgenda(int id, String nome, String telefone) {
-		super();
+	public EContatos(int id, String nome, String telefone) {
+	
 		this.id = id;
 		this.nome = nome;
 		this.telefone = telefone;
 	}
 	
-	public EAgenda(){
+	public EContatos(){
 		
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
