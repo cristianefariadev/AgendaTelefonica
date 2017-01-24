@@ -29,6 +29,11 @@ import javax.swing.text.MaskFormatter;
 import br.entidade.EContatos;
 import br.negocio.BContatos;
 import br.persistencia.PContatos;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.ImageIcon;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
 
 public class TelaPrincipal extends JFrame {
 
@@ -37,7 +42,6 @@ public class TelaPrincipal extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPaneConteiner;
-	private JTextField txtNome;
 	private JTable table;
 	private JTextField txtConsultar;
 
@@ -68,25 +72,15 @@ public class TelaPrincipal extends JFrame {
 
 	DefaultTableModel model = null;
 	JDesktopPane desktop;
+	private JTextField txtCodigo;
+	private JTextField txtNome;
 	private JTextField txtTelefone;
 
-	private void pegaAlunoTela() {
-		int linha = table.getSelectedRow();
-		// System.out.println(model.getValueAt(linha, 0).toString());
-		eContato.setId(((EContatos) lista.get(linha)).getId());
-		eContato.setNome(model.getValueAt(linha, 0).toString());
-		eContato.setTelefone(model.getValueAt(linha, 1).toString());
-
-	}
-
-	void limpar() {
-		eContato = new EContatos();
-	}
-
 	public void limparTela() {
+		txtCodigo.setText("");
 		txtNome.setText("");
 		txtTelefone.setText("");
-
+		eContato = new EContatos();//vai lá vou ver aqui ja ajudou muito obrigada
 	}
 
 	public void listar() {
@@ -113,81 +107,89 @@ public class TelaPrincipal extends JFrame {
 	}
 
 	public TelaPrincipal() {
+		setResizable(false);
+
 		setTitle("Agenda Telefonica da Cris");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 569, 487);
+		setBounds(100, 100, 455, 501);
 		contentPaneConteiner = new JPanel();
 		contentPaneConteiner.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPaneConteiner);
 
-		JPanel panelBotoes = new JPanel();
-		panelBotoes.setBorder(new TitledBorder(null, "Menu", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panelBotoes.setBounds(22, 0, 418, 51);
-
 		JPanel panelSearch = new JPanel();
-		panelSearch.setBorder(
-				new TitledBorder(null, "Pesquisar Contato", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panelSearch.setBounds(22, 168, 418, 270);
+		panelSearch.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Lista de Contatos",
+				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		panelSearch.setBounds(10, 180, 415, 277);
 
 		JPanel panelInsert = new JPanel();
-		panelInsert.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Inserir Contato",
+		panelInsert.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Adicionar Contato",
 				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panelInsert.setBounds(22, 62, 418, 95);
-		panelBotoes.setLayout(null);
+		panelInsert.setBounds(10, 11, 415, 158);
 		contentPaneConteiner.setLayout(null);
 		contentPaneConteiner.add(panelInsert);
 		panelInsert.setLayout(null);
 
 		JLabel lblNome = new JLabel("Nome:");
-		lblNome.setBounds(43, 30, 48, 14);
+		lblNome.setBounds(21, 67, 167, 14);
 		panelInsert.add(lblNome);
 
 		JLabel lblTelefone = new JLabel("Telefone:");
-		lblTelefone.setBounds(30, 55, 61, 14);
+		lblTelefone.setBounds(227, 67, 61, 14);
 		panelInsert.add(lblTelefone);
 
-		txtNome = new JTextField();
-		txtNome.setEnabled(false);
-		txtNome.setBounds(101, 27, 187, 20);
-		panelInsert.add(txtNome);
-		txtNome.setColumns(10);
-
-		JButton btnInserir = new JButton("Inserir");
-		btnInserir.setEnabled(false);
-		btnInserir.setBounds(320, 52, 75, 20);
-		panelInsert.add(btnInserir);
+		JButton btnSalvar = new JButton("Salvar");
+		btnSalvar.setIcon(new ImageIcon(TelaPrincipal.class.getResource("/br/image/icons/tick.png")));
+		btnSalvar.setBounds(303, 115, 96, 25);
+		panelInsert.add(btnSalvar);
 
 		JButton btnLimpar = new JButton("Limpar");
-		btnLimpar.setEnabled(false);
+		btnLimpar.setIcon(new ImageIcon(TelaPrincipal.class.getResource("/br/image/icons/cross.png")));
 		btnLimpar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				txtNome.setText("");
 				txtTelefone.setText("");
 			}
 		});
-		btnLimpar.setBounds(320, 27, 75, 20);
+		btnLimpar.setBounds(186, 115, 102, 25);
 		panelInsert.add(btnLimpar);
 
+		JLabel lblCdigo = new JLabel("C\u00F3digo:");
+		lblCdigo.setBounds(21, 22, 55, 14);
+		panelInsert.add(lblCdigo);
+
+		txtCodigo = new JTextField();
+		txtCodigo.setEnabled(false);
+		txtCodigo.setBounds(21, 36, 86, 20);
+		panelInsert.add(txtCodigo);
+		txtCodigo.setColumns(10);
+
+		txtNome = new JTextField();
+		txtNome.setBounds(21, 83, 167, 20);
+		panelInsert.add(txtNome);
+		txtNome.setColumns(10);
+
 		txtTelefone = new JTextField();
-		txtTelefone.setEnabled(false);
-		txtTelefone.setBounds(101, 55, 187, 20);
+		txtTelefone.setBounds(227, 83, 172, 20);
 		panelInsert.add(txtTelefone);
 		txtTelefone.setColumns(10);
 
-		btnInserir.addActionListener(new ActionListener() {
+		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				// pega o o texto da tela
+				eContato.setId(Long.parseLong(txtCodigo.getText()));
 				eContato.setNome(txtNome.getText());
 				eContato.setTelefone(txtTelefone.getText());
 
 				if (bContato.validar(txtNome, txtTelefone) == true) {
 
-					// objeto dao chama metodo salvar
-					pContato.salvar(eContato);
-					JOptionPane.showMessageDialog(null, "Usuario " + txtNome.getText() + " inserido com sucesso! ");
-					limparTela();
-					listar();
+					try {
+						new PContatos().salvar(eContato);
+						limparTela();
+						listar();
+
+					} catch (Exception erro) {
+						JOptionPane.showMessageDialog(null, "Botão salvar não funcionou");
+						erro.printStackTrace();
+					}
 				}
 			}
 		});
@@ -196,27 +198,35 @@ public class TelaPrincipal extends JFrame {
 		panelSearch.setLayout(null);
 
 		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				txtCodigo.setText(table.getValueAt(table.getSelectedRow(), 0).toString());
+				txtNome.setText(table.getValueAt(table.getSelectedRow(), 1).toString());
+				txtTelefone.setText(table.getValueAt(table.getSelectedRow(), 2).toString());
+
+			}
+		});
 		scrollPane.setEnabled(false);
-		scrollPane.setBounds(12, 62, 394, 159);
+		scrollPane.setBounds(10, 53, 395, 178);
 		panelSearch.add(scrollPane);
 
 		table = new JTable();
-		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "Codigo", "Nome:", "Telefone:" }));
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+			}
+		});
+		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "Código:", "Nome:", "Telefone:" }));
 		scrollPane.setViewportView(table);
 
-		JLabel lblConsultar = new JLabel("C\u00F3digo:");
-		lblConsultar.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblConsultar.setBounds(10, 33, 60, 14);
-		panelSearch.add(lblConsultar);
-
 		txtConsultar = new JTextField();
-		txtConsultar.setEnabled(false);
-		txtConsultar.setBounds(65, 31, 128, 20);
+		txtConsultar.setBounds(69, 22, 133, 20);
 		panelSearch.add(txtConsultar);
 		txtConsultar.setColumns(10);
 
-		JButton btnConsultar = new JButton("Consultar");
-		btnConsultar.setEnabled(false);
+		JButton btnConsultar = new JButton("");
+		btnConsultar.setIcon(new ImageIcon(TelaPrincipal.class.getResource("/br/image/icons/zoom.png")));
 		btnConsultar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -239,22 +249,32 @@ public class TelaPrincipal extends JFrame {
 			}
 
 		});
-		btnConsultar.setBounds(203, 28, 95, 23);
+		btnConsultar.setBounds(211, 22, 32, 20);
 		panelSearch.add(btnConsultar);
 
-		JButton btnListarTudo = new JButton("Listar");
-		btnListarTudo.setEnabled(false);
-		btnListarTudo.setBounds(322, 28, 84, 23);
+		JButton btnEditar = new JButton("Editar");
+		btnEditar.setIcon(new ImageIcon(TelaPrincipal.class.getResource("/br/image/icons/pencil.png")));
+		btnEditar.setBounds(203, 242, 93, 23);
+		panelSearch.add(btnEditar);
+
+		JButton btnExcluir = new JButton("Excluir");
+		btnExcluir.setIcon(new ImageIcon(TelaPrincipal.class.getResource("/br/image/icons/delete.png")));
+		btnExcluir.setBounds(306, 242, 99, 23);
+		panelSearch.add(btnExcluir);
+
+		JLabel lblConsultar = new JLabel("Consultar:");
+		lblConsultar.setBounds(10, 25, 63, 14);
+		panelSearch.add(lblConsultar);
+
+		JButton btnListarTudo = new JButton("Lista de Clientes");
+		btnListarTudo.setBounds(253, 21, 152, 23);
 		panelSearch.add(btnListarTudo);
-
-		JButton btnImprimir = new JButton("Imprimir");
-		btnImprimir.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-
-			}
-		});
-		btnImprimir.setBounds(317, 236, 89, 23);
-		panelSearch.add(btnImprimir);
+		btnListarTudo.setIcon(new ImageIcon(TelaPrincipal.class.getResource("/br/image/icons/page_white_text.png")));
+		
+				JButton btnImprimir = new JButton("Imprimir");
+				btnImprimir.setBounds(76, 242, 116, 23);
+				panelSearch.add(btnImprimir);
+				btnImprimir.setIcon(new ImageIcon(TelaPrincipal.class.getResource("/br/image/icons/printer.png")));
 		btnListarTudo.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
@@ -262,21 +282,6 @@ public class TelaPrincipal extends JFrame {
 			}
 
 		});
-		contentPaneConteiner.add(panelBotoes);
-
-		JButton btnNovo = new JButton("Novo");
-		btnNovo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				txtNome.setEnabled(true);
-				txtTelefone.setEnabled(true);
-				btnInserir.setEnabled(true);
-				btnLimpar.setEnabled(true);
-			}
-		});
-		btnNovo.setBounds(10, 17, 66, 23);
-		panelBotoes.add(btnNovo);
-
-		JButton btnExcluir = new JButton("Excluir");
 		btnExcluir.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -295,42 +300,23 @@ public class TelaPrincipal extends JFrame {
 				} catch (Exception erro) {
 					JOptionPane.showMessageDialog(null, "ERRO AO EXCLUIR");
 				}
-
 			}
 
 		});
-		btnExcluir.setBounds(261, 17, 76, 23);
-		panelBotoes.add(btnExcluir);
-
-		JButton btnSair = new JButton("Sair");
-		btnSair.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				System.exit(0);
-			}
-		});
-		btnSair.setBounds(347, 17, 61, 23);
-		panelBotoes.add(btnSair);
-
-		JButton btnPesquisar = new JButton("Pesquisar");
-		btnPesquisar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				txtConsultar.setEnabled(true);
-				btnConsultar.setEnabled(true);
-				btnListarTudo.setEnabled(true);
-
-			}
-		});
-		btnPesquisar.setBounds(81, 17, 89, 23);
-		panelBotoes.add(btnPesquisar);
-
-		JButton btnEditar = new JButton("Editar");
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
+					txtCodigo.setText(table.getValueAt(table.getSelectedRow(), 0).toString());
+					txtNome.setText(table.getValueAt(table.getSelectedRow(), 1).toString());
+					txtTelefone.setText(table.getValueAt(table.getSelectedRow(), 2).toString());
 
-				
+				} catch (Exception erro) {
+					JOptionPane.showMessageDialog(null, "Erro ao selecionar");
+					erro.printStackTrace();
+				}
+
 			}
 		});
-		btnEditar.setBounds(176, 17, 75, 23);
-		panelBotoes.add(btnEditar);
+
 	}
 }

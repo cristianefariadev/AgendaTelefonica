@@ -22,11 +22,36 @@ public class PContatos {
 		conexao = (Connection) ConexaoBD.getConexao();
 	}
 
-	public void salvar(EContatos contato) {
-
+	public boolean salvar(EContatos contato) {
 		conexao = ConexaoBD.getConexao();
+		String sql;
+		
+		if (contato.getId() == 0L){
+			sql = "INSERT INTO contatos (nome, telefone) VALUES (?, ?)";
+		} else {
+			
+			sql = "update contatos set nome =?,  telefone =?  where id = " + contato.getId();
+		}
+		System.out.println("SQL == " + sql);
+		try {
+			prd = conexao.prepareStatement(sql);
+
+			prd.setString(1, contato.getNome());
+			prd.setString(2, contato.getTelefone());
+			prd.executeUpdate();
+			
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+/*	public void salvar(EContatos contato) {
+		
+		
 
 		try {
+			conexao = ConexaoBD.getConexao();
 			String sql = "INSERT INTO contatos ( nome, telefone) VALUES (?, ?)";
 
 			prd = conexao.prepareStatement(sql);
@@ -35,7 +60,6 @@ public class PContatos {
 			prd.setString(2, contato.getTelefone());
 
 			prd.execute();
-			// conexao.close();
 
 		} catch (SQLException erro) {
 			JOptionPane.showMessageDialog(null, "Erro ao acessar o banco" + erro.getMessage());
@@ -46,38 +70,51 @@ public class PContatos {
 	public void alterar(EContatos eContato) throws SQLException {
 
 		conexao = ConexaoBD.getConexao();
+		try {
 
-		String sql = "update contatos set nome =?,  telefone =?,  where id =? ";
+			String sql = "update contatos set nome =?,  telefone =?,  where id =? ";
 
-		prd = conexao.prepareStatement(sql);
+			prd = conexao.prepareStatement(sql);
 
-		prd.setString(1, eContato.getNome());
-		prd.setString(2, eContato.getTelefone());
+			prd.setString(1, eContato.getNome());
+			prd.setString(2, eContato.getTelefone());
+			prd.setLong(3, eContato.getId());
 
-		//return prd.execute();
+			prd.execute();
+			
+			
+		} catch (SQLException erro) {
+			erro.printStackTrace();
+			erro.getMessage();
+			JOptionPane.showMessageDialog(null, "Erro ao acessar o banco" + erro.getMessage());
+		}
 
-	}
+	}*/
 
 	public List<EContatos> listar() throws SQLException {
-
-		conexao = ConexaoBD.getConexao();
-		
 		List<EContatos> lista = new ArrayList<EContatos>();
+		try{
 		
+		conexao = ConexaoBD.getConexao();
+
 		String sql = "select * from contatos";
-		
+
 		prd = conexao.prepareStatement(sql);
-		
+
 		rs = prd.executeQuery();
 
 		while (rs.next()) {
 			EContatos eContato = new EContatos();
-			
+
 			eContato.setId(rs.getLong("id"));
 			eContato.setNome(rs.getString("nome"));
 			eContato.setTelefone(rs.getString("telefone"));
 
 			lista.add(eContato);
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
+			e.getMessage();
 		}
 		return lista;
 	}
@@ -112,7 +149,7 @@ public class PContatos {
 
 		rs = prd.executeQuery();
 
-		while (rs.next()) {
+		if (rs.next()) {
 			EContatos contato = new EContatos();
 			contato.setId(rs.getLong("id"));
 			contato.setNome(rs.getString("nome"));
